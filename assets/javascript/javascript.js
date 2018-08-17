@@ -44,7 +44,7 @@ $("#addTrain").on("click", function(event) {
     var minutesTilTrain = frequency - trainRemainder;
     console.log("this many minutes til next train: " + minutesTilTrain)
     var nextTrain = currentTime.add(minutesTilTrain, "minutes");
-    var nextTrainTime = (moment(nextTrain).format("HH:mm"));
+    var nextTrainTime = (moment(nextTrain).format("h:mm:ss A"));
     console.log(nextTrainTime);
 
     var newTrain = {
@@ -57,6 +57,10 @@ $("#addTrain").on("click", function(event) {
 
     database.ref().push(newTrain)
 
+    $("#trainName").val("");
+    $("#trainDestination").val("");
+    $("#trainFirst").val("");
+    $("#trainFrequency").val("");
 
 })
 
