@@ -19,7 +19,6 @@ $("#addTrain").on("click", function(event) {
     var destination = 'default';
     var frequency = 'default';
     var nextArrival = 'deafult';
-    var minutesAway = 'default';
 
 
 
@@ -27,32 +26,16 @@ $("#addTrain").on("click", function(event) {
     destination = $("#trainDestination").val().trim();
     frequency = $("#trainFrequency").val().trim();
     nextArrival = $("#trainFirst").val().trim();
-    minutesAway = $("#trainName").val().trim();
 
 
 
-    var firstTrain = $("#trainFirst").val().trim();
-    console.log(firstTrain);
-    var firstTrainConverted = moment(firstTrain, "HH:mm").subtract(1, "y");
-    console.log(firstTrainConverted);
-    var currentTime = moment();
-    console.log(currentTime);
-    var diffTime = currentTime.diff(moment(firstTrainConverted), "minutes")
-    console.log(diffTime)
-    var trainRemainder = diffTime % frequency;
-    console.log(trainRemainder)
-    var minutesTilTrain = frequency - trainRemainder;
-    console.log("this many minutes til next train: " + minutesTilTrain)
-    var nextTrain = currentTime.add(minutesTilTrain, "minutes");
-    var nextTrainTime = (moment(nextTrain).format("h:mm:ss A"));
-    console.log(nextTrainTime);
+
 
     var newTrain = {
         name: name,
         destination: destination,
         frequency: frequency,
-        nextArrival: nextTrainTime,
-        minutesAway: minutesTilTrain
+        nextArrival: nextArrival,
     }
 
     database.ref().push(newTrain)
@@ -70,14 +53,29 @@ database.ref().on("child_added", function(snapshot) {
     var destination = snapshot.val().destination
     var frequency = snapshot.val().frequency
     var nextArrival = snapshot.val().nextArrival
-    var minutesAway = snapshot.val().minutesAway
+
+    var firstTrain = nextArrival;
+    console.log(firstTrain);
+    var firstTrainConverted = moment(firstTrain, "HH:mm").subtract(1, "y");
+    console.log(firstTrainConverted);
+    var currentTime = moment();
+    console.log(currentTime);
+    var diffTime = currentTime.diff(moment(firstTrainConverted), "minutes")
+    console.log(diffTime)
+    var timeRemainder = diffTime % frequency;
+    console.log(timeRemainder)
+    var minutesTilTrain = frequency - timeRemainder;
+    console.log("this many minutes til next train: " + minutesTilTrain)
+    var nextTrain = currentTime.add(minutesTilTrain, "minutes");
+    var nextTrainTime = (moment(nextTrain).format("h:mm A"));
+    console.log(nextTrainTime);
 
     var newRow = $('<tr>');
     newRow.append($('<td>').html(name));
     newRow.append($('<td>').html(destination));
     newRow.append($('<td>').html(frequency));
-    newRow.append($('<td>').html(nextArrival));
-    newRow.append($('<td>').html(minutesAway));
+    newRow.append($('<td>').html(nextTrainTime));
+    newRow.append($('<td>').html(minutesTilTrain));
 
     $("#trainInfo").append(newRow);
 })
